@@ -38,7 +38,8 @@ async def main() -> None:
             print(f"Image {i} failed: {result.error}")
             continue
         save_path = campaign_dir / f"variant-{i}.png"
-        save_image_from_url(result.file_path, save_path)
+        save_image_from_url(result.source_url, save_path)
+        result.local_path = str(save_path)
         print(f"Saved {save_path}")
 
 

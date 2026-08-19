@@ -43,13 +43,13 @@ async def generate_image_recraft(prompt: str, api_key: str) -> ImageResult:
             response.raise_for_status()
             url = response.json()["data"][0]["url"]
             return ImageResult(
-                provider="recraft", prompt=prompt, file_path=url, success=True
+                provider="recraft", prompt=prompt, source_url=url, success=True
             )
         except (httpx.HTTPError, KeyError, IndexError) as exc:
             return ImageResult(
                 provider="recraft",
                 prompt=prompt,
-                file_path="",
+                source_url="",
                 success=False,
                 error=str(exc),
             )
@@ -73,13 +73,13 @@ async def generate_image_ideogram(prompt: str, api_key: str) -> ImageResult:
             response.raise_for_status()
             url = response.json()["data"][0]["url"]
             return ImageResult(
-                provider="ideogram", prompt=prompt, file_path=url, success=True
+                provider="ideogram", prompt=prompt, source_url=url, success=True
             )
         except (httpx.HTTPError, KeyError, IndexError) as exc:
             return ImageResult(
                 provider="ideogram",
                 prompt=prompt,
-                file_path="",
+                source_url="",
                 success=False,
                 error=str(exc),
             )
