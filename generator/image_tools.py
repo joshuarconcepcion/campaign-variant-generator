@@ -35,8 +35,8 @@ async def generate_image_recraft(prompt: str, api_key: str) -> ImageResult:
                 headers={"Authorization": f"Bearer {api_key}"},
                 json={
                     "prompt": prompt,
-                    "style": "digital_illustration",
-                    "size": "1024x1024",
+                    "model": "recraftv4_1_pro",
+                    "size": "2048x2048",
                     "n": 1,
                 },
             )

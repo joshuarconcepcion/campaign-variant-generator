@@ -8,13 +8,20 @@ from generator.models import CampaignBrief
 
 async def main() -> None:
     brief = CampaignBrief(
-        product="Aurora Trail Running Shoes",
-        key_message="Engineered for unpredictable terrain, built for confident strides.",
-        target_audience="Weekend trail runners aged 25-45 who value durability and grip",
-        tone="energetic, adventurous",
+        product="Athen's Lemonade",
+        key_message="Handcrafted lemonade for spontaneous, sun-drenched summer moments.",
+        target_audience=(
+            "Style-conscious young adults (18-30) drawn to nostalgic, "
+            "vintage-inspired aesthetics and slow, sunny days"
+        ),
+        tone="playful, nostalgic, spontaneous",
         style_guide=(
-            "Bold sans-serif type, earthy color palette (moss green, clay "
-            "orange), high-contrast outdoor photography"
+            "Sunflower yellow, cherry red, cream, dark green, and amber color "
+            "palette; nostalgic early-2000s fashion editorial photography with "
+            "a Mediterranean feel, no identifiable landmarks; hard direct "
+            "summer sunlight with a subtle frontal flash; wide-angle 24mm lens "
+            "with playful perspective distortion, 35mm film grain, slightly "
+            "overexposed highlights, casual imperfect crop"
         ),
     )
 
@@ -32,12 +39,12 @@ async def main() -> None:
     print("\nGenerating images (Recraft)...")
     results = await generate_images_concurrent(prompts, provider="recraft")
 
-    campaign_dir = get_campaign_dir("demo-run")
+    campaign_dir = get_campaign_dir("athens-lemonade")
     for i, result in enumerate(results):
         if not result.success:
             print(f"Image {i} failed: {result.error}")
             continue
-        save_path = campaign_dir / f"variant-{i}.png"
+        save_path = campaign_dir / f"variant-{i}.webp"
         save_image_from_url(result.source_url, save_path)
         result.local_path = str(save_path)
         print(f"Saved {save_path}")

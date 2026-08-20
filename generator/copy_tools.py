@@ -56,11 +56,20 @@ def generate_headlines(brief: CampaignBrief, n: int) -> HeadlineSet:
 
 def derive_visual_prompt(headline: HeadlineVariant, brief: CampaignBrief) -> str:
     prompt = (
-        "Turn this headline into a concise, vivid prompt for an AI image "
-        "generation model. Describe the subject, scene, lighting, and "
-        "composition in a couple of sentences. Reflect the brand's style "
-        "guide. Do not describe any text or lettering appearing in the "
-        "image. Return only the image prompt — no preamble, no quotes.\n\n"
+        "Turn this headline into a dense, highly detailed prompt for an AI "
+        "image generation model, written the way professional AI image "
+        "prompt engineers write for photorealistic editorial work. Cover, "
+        "in order: (1) the subject and their specific action or pose, (2) "
+        "concrete wardrobe, props, and setting details, (3) a specific "
+        "lighting setup (not just 'good lighting' — name the actual light "
+        "sources and quality, e.g. hard direct sun with fill flash, "
+        "golden-hour rim light), (4) an explicit named color palette (e.g. "
+        "'moss green, clay orange, cream'), and (5) camera and film "
+        "characteristics — lens focal length, film grain, exposure, "
+        "framing/crop style, and overall mood. Reflect the brand's style "
+        "guide throughout. Do not describe any text or lettering appearing "
+        "in the image. Return only the image prompt itself — no preamble, "
+        "no quotes, no numbered list.\n\n"
         f"Headline: {headline.headline}\n"
         f"Tone: {headline.tone}\n"
         f"Product: {brief.product}\n"
@@ -69,8 +78,8 @@ def derive_visual_prompt(headline: HeadlineVariant, brief: CampaignBrief) -> str
 
     response = _client.messages.create(
         model=_MODEL,
-        max_tokens=512,
-        output_config={"effort": "low"},
+        max_tokens=768,
+        output_config={"effort": "medium"},
         messages=[{"role": "user", "content": prompt}],
     )
 

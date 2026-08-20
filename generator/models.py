@@ -1,9 +1,13 @@
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 # Single generated headline (returned by generate_headlines)
 class HeadlineVariant(BaseModel):
+    # extra="forbid" adds additionalProperties: false to the JSON schema,
+    # required by Claude's structured-output (output_config) validation
+    model_config = ConfigDict(extra="forbid")
+
     headline: str
     tone: str
     reasoning: str
@@ -11,6 +15,8 @@ class HeadlineVariant(BaseModel):
 # List of HeadlineVariant (thin wrapper)
 # Used instead of list[HeadlineVariant] because Pydantic needs model with JSON object shape
 class HeadlineSet(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     variants: list[HeadlineVariant]
 
 # Normalized result of one image generation attempt
