@@ -7,7 +7,8 @@ _MODEL = "claude-opus-5"
 
 _client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
-
+# Takes the CampaignBrief, and the number of headline variants to 
+# generate, and returns a Pydantic object wrapping variants: list[HeadlineVariant]
 def generate_headlines(brief: CampaignBrief, n: int) -> HeadlineSet:
     prompt = (
         f"Generate {n} distinct headline variants for this ad campaign.\n\n"
@@ -21,6 +22,7 @@ def generate_headlines(brief: CampaignBrief, n: int) -> HeadlineSet:
         "would resonate with the target audience."
     )
 
+    # Returns JSON over HTTP, Anthropic SDK deserializes, and returns a Message instance
     response = _client.messages.create(
         model=_MODEL,
         max_tokens=4096,
@@ -34,8 +36,22 @@ def generate_headlines(brief: CampaignBrief, n: int) -> HeadlineSet:
         messages=[{"role": "user", "content": prompt}],
     )
 
-    text_block = next(block for block in response.content if block.type == "text")
-    return HeadlineSet.model_validate_json(text_block.text)
+    """
+    Message object looks something like this:
+    Message(
+    id="msg_01Abc...",
+    model="claude-opus-5",
+    role="assistant",
+    stop_reason="end_turn",
+    usage=Usage(input_tokens=..., output_tokens=...),
+    content=[TextBlock(type="text", text='{"variants": [...] }')],
+    )
+
+    Only 1 block in content, so returns first block if type='text'
+    """
+
+    text_block = next(block for block in response.content if block.type == "text") # TextBlock object with .type and .text
+    return HeadlineSet.model_validate_json(text_block.text) # builds HeadlineSet instance out of parsed data
 
 
 def derive_visual_prompt(headline: HeadlineVariant, brief: CampaignBrief) -> str:
